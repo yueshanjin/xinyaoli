@@ -71,11 +71,14 @@ async function dec(raw){const p=await load();const salt=p.slice(0,16),iv=p.slice
   return html}
 function show(html){document.open();document.write(html);document.close()}
 const b64=u=>btoa(String.fromCharCode(...u)),unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const SILENT='data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAHAAADkQBQUFBQUFBQUFBQUFBQUG1tbW1tbW1tbW1tbW1tioqKioqKioqKioqKioqoqKioqKioqKioqKioqKjFxcXFxcXFxcXFxcXFxeLi4uLi4uLi4uLi4uLi//////////////////8AAAAATGF2YzYwLjMxAAAAAAAAAAAAAAAAJANpAAAAAAAAA5G5oLCCAAAAAAD/+xDEAAPAAAGkAAAAIAAANIAAAARMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVf/7EsQpg8AAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7EMRTg8AAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sSxH0DwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxKcDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+xLE0IPAAAGkAAAAIAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+xDE1gPAAAGkAAAAIAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==';
+function unlock(){try{const a=window.__yyAudio=window.__yyAudio||new Audio();a.src=SILENT;const p=a.play();if(p)p.catch(()=>{})}catch(e){}}
+const keep=raw=>{try{sessionStorage.setItem('yy_k',b64(raw))}catch(e){}};
 let saved=null;try{saved=localStorage.getItem('yy_gate')}catch(e){}
-if(saved){msg('正在拆开…');$('go').disabled=true;dec(unb64(saved)).then(show).catch(()=>{try{localStorage.removeItem('yy_gate')}catch(e){}msg('');$('go').disabled=false})}
-$('f').addEventListener('submit',async e=>{e.preventDefault();const pw=$('pw').value;if(!pw)return;$('go').disabled=true;msg('正在拆开…');
+if(saved){msg('正在拆开…');$('go').disabled=true;dec(unb64(saved)).then(h=>{keep(unb64(saved));show(h)}).catch(()=>{try{localStorage.removeItem('yy_gate')}catch(e){}msg('');$('go').disabled=false})}
+$('f').addEventListener('submit',async e=>{e.preventDefault();const pw=$('pw').value;if(!pw)return;unlock();$('go').disabled=true;msg('正在拆开…');
   try{const p=await load();const raw=await keyFrom(pw,p.slice(0,16));const html=await dec(raw);
-    if($('rm').checked){try{localStorage.setItem('yy_gate',b64(raw))}catch(e){}}
+    keep(raw);if($('rm').checked){try{localStorage.setItem('yy_gate',b64(raw))}catch(e){}}
     show(html)}
   catch(err){$('go').disabled=false;msg(err&&err.message==='load'?'加载失败了，刷新再试一次':'密码不对哦，再想想～');const box=$('box');box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');$('pw').select()}});
 })();
